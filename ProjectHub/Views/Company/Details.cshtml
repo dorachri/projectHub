@@ -1,0 +1,61 @@
+﻿@model Company
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    var user = await UserManager.GetUserAsync(User);
+    var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2><br />
+
+    @await Html.PartialAsync("_UserDetailsPartial", Model.UserId)
+
+    <div class="mb-5">
+        <h4>Company info</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CompanyName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Type)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Type)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Industry)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Industry)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Specialties)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Specialties)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Website)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Website)
+            </dd>
+        </dl>
+
+        @if (isAdmin)
+        {
+            <div>
+                <a class="btn btn-link p-0" asp-controller="Admin" asp-action="EditCompany" asp-route-id="@Model.CompanyId">Edit</a> |
+                <a href='javascript:history.go(-1)' class="btn btn-link p-0">Back to previous page</a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,96 @@
+﻿@model StatusLogsViewModel
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Status logs";
+    var loggedInUser = await UserManager.GetUserAsync(User);
+    var isAdmin = await UserManager.IsInRoleAsync(loggedInUser, "Admin");
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-6">
+        <h4>
+            Status logs for project:
+            <a asp-action="Details" asp-route-id="@Model.ProjectId">@Model.ProjectCode</a>
+        </h4>
+        <br />
+
+        @if (Model.StatusLogs.Any())
+        {
+            <input class="form-control" id="myInput" type="text" placeholder="Search.."><br />
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Old status
+                            </th>
+                            <th>
+                                New status
+                            </th>
+                            <th>
+                                Changed by user
+                            </th>
+                            @if (isAdmin)
+                            {
+                                <th>
+                                    Action
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        @foreach (var item in Model.StatusLogs)
+                        {
+                            var user = await UserManager.FindByIdAsync(item.UserId);
+                            var isStudent = await UserManager.IsInRoleAsync(user, "Student");
+                            var isProfessor = await UserManager.IsInRoleAsync(user, "Professor");
+                            var isCompany = await UserManager.IsInRoleAsync(user, "Company");
+
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EventDate)
+                                </td>
+                                <td>
+                                    @Model.Statuses.FirstOrDefault(s => s.Value == item.OldStatus.ToString()).Text
+                                </td>
+                                <td>
+                                    @Model.Statuses.FirstOrDefault(s => s.Value == item.NewStatus.ToString()).Text
+                                </td>
+                                <td>
+                                    @if (isStudent)
+                                    {
+                                        <a asp-controller="Student" asp-action="Details" asp-route-id="@item.Project?.Student?.StudentId">@user.UserName</a>
+                                    }
+                                    else if (isProfessor)
+                                    {
+                                        <a asp-controller="Professor" asp-action="Details" asp-route-id="@item.Project?.Professor?.ProfessorId">@user.UserName</a>
+                                    }
+                                    else if (isCompany)
+                                    {
+                                        <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Project?.Company?.CompanyId">@user.UserName</a>
+                                    }
+                                </td>
+                                @if (isAdmin)
+                                {
+                                    <td>
+                                        <a asp-controller="StatusLog" asp-action="Delete" asp-route-id="@item.StatusLogId">Delete</a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h5>No status logs</h5>
+        }
+    </div>
+</div>

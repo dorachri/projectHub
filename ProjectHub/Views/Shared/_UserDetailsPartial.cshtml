@@ -1,0 +1,46 @@
+﻿@model string
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    var user = await UserManager.FindByIdAsync(Model);
+}
+
+<div>
+    <h4>Contact info</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            First name
+        </dt>
+        <dd class="col-sm-10">
+            @(user?.FirstName ?? "-")
+        </dd>
+        <dt class="col-sm-2">
+            Last name
+        </dt>
+        <dd class="col-sm-10">
+            @(user?.LastName ?? "-")
+        </dd>
+        <dt class="col-sm-2">
+            Email
+        </dt>
+        <dd class="col-sm-10">
+            @if (user?.Email != null)
+            {
+                <a href="mailto:@user?.Email">@user?.Email</a>
+            }
+            else
+            {
+                @("-");
+            }
+        </dd>
+        <dt class="col-sm-2">
+            Phone number
+        </dt>
+        <dd class="col-sm-10">
+            @(user?.PhoneNumber ?? "-")
+        </dd>
+    </dl>
+</div>

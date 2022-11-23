@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Professor>
+
+@{
+    ViewData["Title"] = "Professors";
+    var allProfessors = ViewContext.RouteData.Values["Id"] == null || ViewContext.RouteData.Values["Id"].Equals("0");
+    var professors = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("1");
+    var assistantProfessors = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("2");
+    var associateProfessors = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("3");
+
+    @if (!(allProfessors || professors || assistantProfessors || associateProfessors))
+    {
+        allProfessors = true;
+    }
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-2 mb-5">
+        <h3>Categories</h3>
+
+        <p>
+            <a asp-action="UserDashboard">User dashboard</a>
+        </p>
+
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action @(allProfessors ? "active" : "")"
+               asp-action="Professors" asp-route-id="0">
+                All
+            </a>
+            <a class="list-group-item list-group-item-action @(professors ? "active" : "")"
+               asp-action="Professors" asp-route-id="1">
+                Professor
+            </a>
+            <a class="list-group-item list-group-item-action @(assistantProfessors ? "active" : "")"
+               asp-action="Professors" asp-route-id="2">
+                Assistant Professor
+            </a>
+            <a class="list-group-item list-group-item-action @(associateProfessors ? "active" : "")"
+               asp-action="Professors" asp-route-id="3">
+                Associate Professor
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <h3>@ViewData["Title"]</h3>
+
+        <p>
+            <a asp-controller="Professor" asp-action="Create">Create new</a>
+        </p>
+
+        @await Html.PartialAsync("_ErrorMessagePartial", TempData["Message"])
+
+        @if (Model.Any())
+        {
+            <input class="form-control" id="myInput" type="text" placeholder="Search.."><br />
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.Inactive)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.LastName)
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Institution)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Department)
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.Inactive)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.LastName)
+                                </td>
+                                <td>
+                                    @(item.User?.UserName ?? "-")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Institution)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Department)
+                                </td>
+                                <td class="text-nowrap">
+                                    <a asp-action="EditProfessor" asp-route-id="@item.ProfessorId">Edit</a> |
+                                    <a asp-controller="Professor" asp-action="Details" asp-route-id="@item.ProfessorId">Details</a> |
+                                    <a asp-action="DeleteProfessor" asp-route-id="@item.ProfessorId" method="post">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h4>No professors</h4>
+        }
+    </div>
+</div>

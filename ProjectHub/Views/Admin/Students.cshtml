@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Student>
+
+@{
+    ViewData["Title"] = "Students";
+    var allStudents = ViewContext.RouteData.Values["Id"] == null || ViewContext.RouteData.Values["Id"].Equals("0");
+    var undergraduate = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("1");
+    var postgraduate = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("2");
+
+    @if (!(allStudents || undergraduate || postgraduate))
+    {
+        allStudents = true;
+    }
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-2 mb-5">
+        <h3>Categories</h3>
+
+        <p>
+            <a asp-action="UserDashboard">User dashboard</a>
+        </p>
+
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action @(allStudents ? "active" : "")"
+               asp-action="Students" asp-route-id="0">
+                All
+            </a>
+            <a class="list-group-item list-group-item-action @(undergraduate ? "active" : "")"
+               asp-action="Students" asp-route-id="1">
+                Undergraduate
+            </a>
+            <a class="list-group-item list-group-item-action @(postgraduate ? "active" : "")"
+               asp-action="Students" asp-route-id="2">
+                Postgraduate
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <h3>@ViewData["Title"]</h3>
+
+        <p>
+            <a asp-controller="Student" asp-action="Create">Create new</a>
+        </p>
+
+        @await Html.PartialAsync("_ErrorMessagePartial", TempData["Message"])
+
+        @if (Model.Any())
+        {
+            <input class="form-control" id="myInput" type="text" placeholder="Search.."><br />
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.Inactive)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.User.LastName)
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Institution)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Department)
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.Inactive)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.User.LastName)
+                                </td>
+                                <td>
+                                    @(item.User?.UserName ?? "-")
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Institution)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Department)
+                                </td>
+                                <td class="text-nowrap">
+                                    <a asp-action="EditStudent" asp-route-id="@item.StudentId">Edit</a> |
+                                    <a asp-controller="Student" asp-action="Details" asp-route-id="@item.StudentId">Details</a> |
+                                    <a asp-action="DeleteStudent" asp-route-id="@item.StudentId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h4>No students</h4>
+        }
+    </div>
+</div>

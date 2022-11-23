@@ -1,0 +1,55 @@
+﻿@model Professor
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    var user = await UserManager.GetUserAsync(User);
+    var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2><br />
+
+    @await Html.PartialAsync("_UserDetailsPartial", Model.UserId)
+
+    <div class="mb-5">
+        <h4>Professor info</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Institution)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Institution)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Department)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Department)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.School)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.School)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Rank)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Rank)
+            </dd>
+        </dl>
+
+        @if (isAdmin)
+        {
+            <div>
+                <a class="btn btn-link p-0" asp-controller="Admin" asp-action="EditProfessor" asp-route-id="@Model.ProfessorId">Edit</a> |
+                <a href='javascript:history.go(-1)' class="btn btn-link p-0">Back to previous page</a>
+            </div>
+        }
+    </div>
+</div>

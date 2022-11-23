@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Notification>
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@using ProjectHub.Repositories
+@inject UserManager<ApplicationUser> UserManager
+@inject IProjectRepository ProjectRepository
+@inject IStudentRepository StudentRepository
+@inject IProfessorRepository ProfessorRepository
+@inject ICompanyRepository CompanyRepository
+
+@{
+    ViewData["Title"] = "Notifications";
+    var user = await UserManager.GetUserAsync(User);
+    var isStudent = await UserManager.IsInRoleAsync(user, "Student");
+    var isProfessor = await UserManager.IsInRoleAsync(user, "Professor");
+    var isCompany = await UserManager.IsInRoleAsync(user, "Company");
+    var userProjects = new List<Project>();
+
+    if (isStudent)
+    {
+        var student = StudentRepository.GetStudentByUserId(user.Id);
+        userProjects = ProjectRepository.GetAllUserProjects(student.StudentId, "Student").ToList();
+    }
+    else if (isProfessor)
+    {
+        var professor = ProfessorRepository.GetProfessorByUserId(user.Id);
+        userProjects = ProjectRepository.GetAllUserProjects(professor.ProfessorId, "Professor").ToList();
+    }
+    else if (isCompany)
+    {
+        var company = CompanyRepository.GetCompanyByUserId(user.Id);
+        userProjects = ProjectRepository.GetAllUserProjects(company.CompanyId, "Company").ToList();
+    }
+
+    var allNotifications = ViewContext.RouteData.Values["Id"].Equals("0");
+    int routeId;
+    var isNumber = Int32.TryParse(ViewContext.RouteData.Values["Id"].ToString(), out routeId);
+
+    if (!isNumber || userProjects.FirstOrDefault(p => p.ProjectId == routeId) == null)
+    {
+        allNotifications = true;
+    }
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-4 mb-5">
+        <h3>@(isStudent ? "My project" : "My projects")</h3>
+
+        @if (isStudent && userProjects.Any())
+        {
+            <p>
+                <a asp-controller="Student" asp-action="Project">Manage project</a>
+            </p>
+        }
+        else if (isProfessor && userProjects.Any())
+        {
+            <p>
+                <a asp-controller="Professor" asp-action="Projects">Manage projects</a>
+            </p>
+        }
+        else if (isCompany && userProjects.Any())
+        {
+            <p>
+                <a asp-controller="Company" asp-action="Projects">Manage projects</a>
+            </p>
+        }
+        else
+        {
+            <br />
+            <h4>No projects</h4>
+        }
+
+        <div class="list-group">
+            @if (!isStudent && userProjects.Any())
+            {
+                <a class="list-group-item list-group-item-action @(allNotifications ? "active" : "")"
+                   asp-action="UserNotifications" asp-route-id="0">
+                    All
+                </a>
+            }
+            @foreach (var project in userProjects)
+            {
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Id"].Equals(project.ProjectId.ToString()) || isStudent ? "active" : "")"
+                   asp-action="UserNotifications" asp-route-id="@project.ProjectId">
+                    @project.ProjectCode - @project.Title
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div id="notifications">
+            @if (Model.Any())
+            {
+                var newNotifications = Model.Where(n => n.IsSeen == false).Count();
+                <h3>@newNotifications @(newNotifications == 1 ? "new notification" : "new notifications")</h3>
+
+                <p>
+                    <a asp-controller="Notification" asp-action="MarkAllAsRead">Mark all as read</a>
+                </p>
+            }
+            else
+            {
+                <h3>No notifications</h3>
+            }
+
+            @if (Model != null)
+            {
+                foreach (var notification in Model.OrderBy(n => n.IsSeen).OrderByDescending(n => n.EventDate))
+                {
+                    if (!notification.IsSeen)
+                    {
+                        <div class="alert alert-primary">
+                            <div class="dropdown">
+                                <strong>New!</strong>
+                                <button type="button" class="btn btn-sm float-right dropdown-toggle" data-toggle="dropdown"></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item text-primary" asp-controller="Notification" asp-action="MarkAsRead" asp-route-id="@notification.NotificationId">Mark as read</a>
+                                    <a class="dropdown-item text-danger" asp-controller="Notification" asp-action="Delete" asp-route-id="@notification.NotificationId">Delete</a>
+                                </div>
+                            </div>
+                            Project @notification.ProjectCode changed status.<br />
+                            <small>@notification.EventDate</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary">
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-light btn-sm bg-transparent border-0 float-right dropdown-toggle" data-toggle="dropdown"></button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item text-danger" asp-controller="Notification" asp-action="Delete" asp-route-id="@notification.NotificationId">Delete</a>
+                                </div>
+                            </div>
+                            Project @notification.ProjectCode changed status.<br />
+                            <small>@notification.EventDate</small>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/notification.js"></script>

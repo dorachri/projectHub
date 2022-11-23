@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container">
+    <!-- Main jumbotron for a primary marketing message -->
+    <div class="jumbotron text-center bg-transparent mb-5">
+        <h1 class="display-4">Real world IT projects</h1>
+        <h4><font color="#5bc0de">Pro</font><font color="#f2bb0d">ject</font><font color="#e43413">Hub</font>,<small> where you can find and manage your next IT project.</small></h4>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-lg-3 card mx-auto mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="fas fa-graduation-cap fa-5x pl-3" style="color:#5bc0de"></i>
+                <h3 class="card-title pl-2">Students</h3>
+                <p class="card-text text-muted">Students can see which projects are available and after approval, select one and record the progress of the project.</p>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <a class="btn btn-link zoom" id="register" asp-area="" asp-controller="Student" asp-action="Create" role="button">Join as student</a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-3 card mx-auto mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="fas fa-chalkboard-teacher fa-5x pl-4" style="color:#f2bb0d"></i>
+                <h3 class="card-title pl-2">Professors</h3>
+                <p class="card-text text-muted">Professors can assign projects to students and monitor the progress of each project.</p>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <a class="btn btn-link zoom" id="register" asp-area="" asp-controller="Professor" asp-action="Create" role="button">Join as professor</a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-3 card mx-auto mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="fas fa-building fa-5x pl-4" style="color:#e43413"></i>
+                <h3 class="card-title pl-2">Companies</h3>
+                <p class="card-text text-muted">Companies can submit project proposals. When a project is assigned to a student, they can also monitor the progress of the project.</p>
+                @if (!SignInManager.IsSignedIn(User))
+                {
+                    <a class="btn btn-link zoom" id="register" asp-area="" asp-controller="Company" asp-action="Create" role="button">Join as company</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

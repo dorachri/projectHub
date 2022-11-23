@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Project>
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Search results";
+    var user = await UserManager.GetUserAsync(User);
+    var isProfessor = await UserManager.IsInRoleAsync(user, "Professor");
+    var isStudent = await UserManager.IsInRoleAsync(user, "Student");
+}
+
+<div class="container mb-5">
+    @if (Model.Any())
+    {
+        <h2 class="text-center">@ViewData["Title"]</h2><br />
+    }
+    else
+    {
+        <h2 class="text-center">No results</h2><br />
+    }
+
+    @foreach (var item in Model)
+    {
+        <div class="card w-75 mx-auto shadow-sm">
+            <h5 class="card-header">
+                @Html.DisplayNameFor(model => model.ProjectCode): @Html.DisplayFor(modelItem => item.ProjectCode)
+                <small class="float-md-right">
+                    by <a asp-controller="Company" asp-action="Details" asp-route-id="@item.CompanyId">@item.Company?.CompanyName</a>
+                </small>
+            </h5>
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayNameFor(model => model.Title): @Html.DisplayFor(modelItem => item.Title)</h5>
+                <p class="card-text text-muted">@Html.DisplayNameFor(model => model.PublicationDate): @Html.DisplayFor(modelItem => item.PublicationDate)</p>
+                <a class="card-link" asp-action="Details" asp-route-id="@item.ProjectId">View more</a>
+                @if (isProfessor)
+                {
+                    <a class="card-link text-danger" asp-action="Assign" asp-route-id="@item.ProjectId">Assign</a>
+                }
+                else if (isStudent)
+                {
+                    <a href="mailto:?subject=@item.ProjectCode - @item.Title&body=Hello, I found this project and thought we should consider it." class="card-link text-danger">Email project code</a>
+                }
+            </div>
+        </div><br />
+    }
+</div>

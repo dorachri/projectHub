@@ -1,0 +1,207 @@
+﻿@model UserDashboardViewModel
+@using System 
+
+@{
+    ViewData["Title"] = "User dashboard";
+    decimal allUsers = Model.AllUsers.Count();
+    decimal active = Model.AllUsers.Where(u => u.Inactive == false).Count();
+    decimal inactive = Model.AllUsers.Where(u => u.Inactive == true).Count();
+    decimal students = Model.Students.Count();
+    decimal undergraduates = Model.Students.Where(s => s.Degree == "Undergraduate").Count();
+    decimal postgraduates = Model.Students.Where(s => s.Degree == "Postgraduate").Count();
+    decimal allProfessors = Model.Professors.Count();
+    decimal professors = Model.Professors.Where(p => p.Rank == "Professor").Count();
+    decimal assistantProfessors = Model.Professors.Where(p => p.Rank == "Assistant Professor").Count();
+    decimal associateProfessors = Model.Professors.Where(p => p.Rank == "Associate Professor").Count();
+    decimal companies = Model.Companies.Count();
+    decimal privatelyHeld = Model.Companies.Where(c => c.Type == "Privately Held").Count();
+    decimal publicCompanies = Model.Companies.Where(c => c.Type == "Public Company").Count();
+    decimal partnerships = Model.Companies.Where(c => c.Type == "Partnership").Count();
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-2 mb-5">
+        <h3>Categories</h3><br />
+
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <a asp-action="Users">All users</a>
+                <span class="badge badge-light">@allUsers</span>
+            </li>
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <a asp-action="Students">Students</a>
+                <span class="badge badge-light">@students</span>
+            </li>
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <a asp-action="Professors">Professors</a>
+                <span class="badge badge-light">@allProfessors</span>
+            </li>
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <a asp-action="Companies">Companies</a>
+                <span class="badge badge-light">@companies</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-lg-8">
+        <h3>@ViewData["Title"]</h3><br />
+
+        <div class="row">
+            <div class="col-sm-6 mb-2">
+                <div class="card border-primary border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-user-check fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-primary">
+                            <a class="text-primary" asp-action="Users" asp-route-id="1">Active</a>
+                        </h5>
+                        <p class="card-text">
+                            @active @(active == 1 ? "user" : "users")
+                            <small class="text-muted">(@(allUsers > 0 ? Decimal.Round((active / allUsers) * 100) : 0)% of all users)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mb-4">
+                <div class="card border-dark border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-user-times fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-dark">
+                            <a class="text-dark" asp-action="Users" asp-route-id="2">Inactive</a>
+                        </h5>
+                        <p class="card-text">
+                            @inactive @(inactive == 1 ? "user" : "users")
+                            <small class="text-muted">(@(allUsers > 0 ? Decimal.Round((inactive / allUsers) * 100) : 0)% of all users)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 mb-2">
+                <div class="card border-info border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-info">
+                            <a class="text-info" asp-action="Students" asp-route-id="1">Undergraduate</a>
+                        </h5>
+                        <p class="card-text">
+                            @undergraduates @(undergraduates == 1 ? "user" : "users")
+                            <small class="text-muted">(@(students > 0 ? Decimal.Round((undergraduates / students) * 100) : 0)% of all students)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mb-4">
+                <div class="card border-info border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-info">
+                            <a class="text-info" asp-action="Students" asp-route-id="2">Postgraduate</a>
+                        </h5>
+                        <p class="card-text">
+                            @postgraduates @(postgraduates == 1 ? "user" : "users")
+                            <small class="text-muted">(@(students > 0 ? Decimal.Round((postgraduates / students) * 100) : 0)% of all students)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 mb-2">
+                <div class="card border-warning border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-chalkboard-teacher fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-warning">
+                            <a class="text-warning" asp-action="Professors" asp-route-id="1">Professors</a>
+                        </h5>
+                        <p class="card-text">
+                            @professors @(professors == 1 ? "user" : "users")
+                            <small class="text-muted">(@(allProfessors > 0 ? Decimal.Round((professors / allProfessors) * 100) : 0)% of all professors)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mb-2">
+                <div class="card border-warning border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-chalkboard-teacher fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-warning">
+                            <a class="text-warning" asp-action="Professors" asp-route-id="2">Assistant Professors</a>
+                        </h5>
+                        <p class="card-text">
+                            @assistantProfessors @(assistantProfessors == 1 ? "user" : "users")
+                            <small class="text-muted">(@(allProfessors > 0 ? Decimal.Round((assistantProfessors / allProfessors) * 100) : 0)% of all professors)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 mb-4">
+                <div class="card border-warning border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-chalkboard-teacher fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-warning">
+                            <a class="text-warning" asp-action="Professors" asp-route-id="3">Associate Professors</a>
+                        </h5>
+                        <p class="card-text">
+                            @associateProfessors @(associateProfessors == 1 ? "user" : "users")
+                            <small class="text-muted">(@(allProfessors > 0 ? Decimal.Round((associateProfessors / allProfessors) * 100) : 0)% of all professors)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6 mb-2">
+                <div class="card border-danger border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-building fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-danger">
+                            <a class="text-danger" asp-action="Companies" asp-route-id="1">Privately Held</a>
+                        </h5>
+                        <p class="card-text">
+                            @privatelyHeld @(privatelyHeld == 1 ? "user" : "users")
+                            <small class="text-muted">(@(companies > 0 ? Decimal.Round((privatelyHeld / companies) * 100) : 0)% of all companies)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mb-2">
+                <div class="card border-danger border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-building fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-danger">
+                            <a class="text-danger" asp-action="Companies" asp-route-id="2">Public Companies</a>
+                        </h5>
+                        <p class="card-text">
+                            @publicCompanies @(publicCompanies == 1 ? "user" : "users")
+                            <small class="text-muted">(@(companies > 0 ? Decimal.Round((publicCompanies / companies) * 100) : 0)% of all companies)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card border-danger border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-building fa-2x float-right" style="color:#dfe4ea"></i>
+                        <h5 class="card-title text-danger">
+                            <a class="text-danger" asp-action="Companies" asp-route-id="3">Partnership</a>
+                        </h5>
+                        <p class="card-text">
+                            @partnerships @(partnerships == 1 ? "user" : "users")
+                            <small class="text-muted">(@(companies > 0 ? Decimal.Round((partnerships / companies) * 100) : 0)% of all companies)</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

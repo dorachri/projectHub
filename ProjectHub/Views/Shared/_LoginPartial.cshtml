@@ -1,0 +1,116 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@using ProjectHub.Repositories
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject INotificationRepository NotificationRepository
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var isStudent = await UserManager.IsInRoleAsync(user, "Student");
+        var isProfessor = await UserManager.IsInRoleAsync(user, "Professor");
+        var isCompany = await UserManager.IsInRoleAsync(user, "Company");
+        var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+
+        @if (!isAdmin)
+        {
+            var userId = user.Id;
+            var notifications = NotificationRepository.GetAllUserNotifications(userId);
+            <li class="nav-item">
+                <a tabindex="0" class="nav-link" id="notificationsPartial" role="button" data-html="true" data-toggle="popover" data-trigger="focus" data-placement="bottom" data-content='@{await Html.RenderPartialAsync("_UserNotificationsPartial", notifications);}'>Notifications</a>
+            </li>
+        }
+
+        @if (isStudent)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    Project
+                </a>
+                <div class="dropdown-menu bg-dark">
+                    <a class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Search">Search project</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Student" asp-action="Project">Manage project</a>
+                </div>
+            </li>
+        }
+        else if (isProfessor)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    Project
+                </a>
+                <div class="dropdown-menu bg-dark">
+                    <a class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Search">Seacrh project</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Assign">Assign project</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Professor" asp-action="Projects">Manage projects</a>
+                    <div class="dropdown-divider border-secondary"></div>
+                    <a class="dropdown-item" asp-area="" asp-controller="Professor" asp-action="Dashboard">Dashboard</a>
+                </div>
+            </li>
+        }
+        else if (isCompany)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    Project
+                </a>
+                <div class="dropdown-menu bg-dark">
+                    <a class="dropdown-item" asp-area="" asp-controller="Project" asp-action="Create">Add new project</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="Projects">Manage projects</a>
+                    <div class="dropdown-divider border-secondary"></div>
+                    <a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="Dashboard">Dashboard</a>
+                </div>
+            </li>
+        }
+        else if (isAdmin)
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                    Manage
+                </a>
+                <div class="dropdown-menu bg-dark">
+                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Students">Students</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Professors">Professors</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Companies">Companies</a>
+                    <div class="dropdown-divider border-secondary"></div>
+                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Projects">Projects</a>
+                </div>
+            </li>
+        }
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                Account
+            </a>
+            <div class="dropdown-menu bg-dark">
+                <a id="manage" class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Profile info</a>
+                @if (isStudent)
+                {
+                    <a class="dropdown-item" asp-area="" asp-controller="Student" asp-action="Edit">Student info</a>
+                }
+                else if (isProfessor)
+                {
+                    <a class="dropdown-item" asp-area="" asp-controller="Professor" asp-action="Edit">Professor info</a>
+                }
+                else if (isCompany)
+                {
+                    <a class="dropdown-item" asp-area="" asp-controller="Company" asp-action="Edit">Company info</a>
+                }
+                <div class="dropdown-divider border-secondary"></div>
+                <a id="manage" class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Manage">Change password</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

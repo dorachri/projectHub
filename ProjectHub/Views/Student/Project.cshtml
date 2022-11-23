@@ -1,0 +1,107 @@
+﻿@model IEnumerable<ProjectViewModel>
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@using ProjectHub.Repositories
+@inject UserManager<ApplicationUser> UserManager
+@inject IStudentRepository StudentRepository
+
+@{
+    ViewData["Title"] = "My project";
+    var user = await UserManager.GetUserAsync(User);
+    var student = StudentRepository.GetStudentByUserId(user.Id);
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-8">
+        <h3>Manage project</h3>
+
+        @if (Model.Any())
+        {
+            <p>
+                <a asp-controller="StatusLog" asp-action="GetStudentProjectStatusLogs" asp-route-id="@student.StudentId">Status logs</a>
+            </p>
+
+            @await Html.PartialAsync("_ErrorMessagePartial", TempData["Message"])
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProjectCode)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EndDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Professor)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Company)
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjectCode)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @if (item.EndDate.Equals(DateTime.MinValue))
+                                    {
+                                        @("-");
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.EndDate)
+                                    }
+                                </td>
+                                <td class="text-nowrap">
+                                    @Html.DisplayFor(modelItem => item.Statuses.FirstOrDefault(s => s.Value == item.Status.ToString()).Text)
+                                </td>
+                                <td>
+                                    <a asp-controller="Professor" asp-action="Details" asp-route-id="@item.Professor?.ProfessorId">@item.Professor?.User?.FirstName @item.Professor?.User?.LastName</a>
+                                </td>
+                                <td>
+                                    <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Company?.CompanyId">@item.Company?.CompanyName</a>
+                                </td>
+                                <td class="text-nowrap">
+                                    <a asp-action="EditProject" asp-route-id="@item.ProjectId">Edit</a> |
+                                    <a asp-controller="Project" asp-action="Details" asp-route-id="@item.ProjectId">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <br />
+            <h4>No projects</h4>
+        }
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/notification.js"></script>

@@ -1,0 +1,73 @@
+﻿@model SearchViewModel
+
+@{
+    ViewData["Title"] = "Search project";
+}
+
+<div class="container mb-5">
+    <h2 class="text-center">@ViewData["Title"]</h2><br />
+
+    <ul class="nav nav-pills justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="pill" href="#projectInfo">Project info</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="pill" href="#companyInfo">Company info</a>
+        </li>
+    </ul><br />
+
+    <div class="tab-content p-4 border rounded shadow-sm">
+        <div class="tab-pane container active" id="projectInfo">
+            <form class="justify-content-center" asp-action="Search" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DefaultSearch" value="true" />
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label asp-for="SearchRange" class="control-label col-form-label-lg"></label>
+                        <select asp-for="SearchRange" asp-items="Model.SearchRanges" class="form-control form-control-lg"></select>
+                        <span asp-validation-for="SearchRange" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="ProjectCode" class="control-label col-form-label-lg"></label>
+                        <input asp-for="ProjectCode" class="form-control form-control-lg" />
+                        <span asp-validation-for="ProjectCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Title" class="control-label col-form-label-lg"></label>
+                        <input asp-for="Title" class="form-control form-control-lg" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div><br />
+                    <div class="form-group col-md-2 d-flex">
+                        <input type="submit" value="Search" class="btn btn-primary btn-lg btn-block align-self-end" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane container fade" id="companyInfo">
+            <form class="justify-content-center" asp-action="Search" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DefaultSearch" value="false" />
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label asp-for="SearchRange" class="control-label col-form-label-lg"></label>
+                        <select asp-for="SearchRange" asp-items="Model.SearchRanges" class="form-control form-control-lg"></select>
+                        <span asp-validation-for="SearchRange" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="CompanyName" class="control-label col-form-label-lg"></label>
+                        <input asp-for="CompanyName" class="form-control form-control-lg" />
+                        <span asp-validation-for="CompanyName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Industry" class="control-label col-form-label-lg"></label>
+                        <input asp-for="Industry" class="form-control form-control-lg" />
+                        <span asp-validation-for="Industry" class="text-danger"></span>
+                    </div><br />
+                    <div class="form-group col-md-2 d-flex">
+                        <input type="submit" value="Search" class="btn btn-primary btn-lg btn-block align-self-end" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

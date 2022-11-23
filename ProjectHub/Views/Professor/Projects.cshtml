@@ -1,0 +1,143 @@
+﻿@model IEnumerable<ProjectViewModel>
+
+@{
+    ViewData["Title"] = "My projects";
+    var allProjects = ViewContext.RouteData.Values["Id"] == null || ViewContext.RouteData.Values["Id"].Equals("0");
+    var assigned = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("2");
+    var ongoing = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("3");
+    var submitted = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("4");
+    var done = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("5");
+
+    @if (!(allProjects || assigned || ongoing || submitted || done))
+    {
+        allProjects = true;
+    }
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-2 mb-5">
+        <h3>Categories</h3>
+
+        <p>
+            <a asp-action="Dashboard">Dashboard</a>
+        </p>
+
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action @(allProjects ? "active" : "")"
+               asp-action="Projects" asp-route-id="0">
+                All
+            </a>
+            <a class="list-group-item list-group-item-action @(assigned ? "active" : "")"
+               asp-action="Projects" asp-route-id="2">
+                Assigned
+            </a>
+            <a class="list-group-item list-group-item-action @(ongoing ? "active" : "")"
+               asp-action="Projects" asp-route-id="3">
+                Ongoing
+            </a>
+            <a class="list-group-item list-group-item-action @(submitted ? "active" : "")"
+               asp-action="Projects" asp-route-id="4">
+                Submitted
+            </a>
+            <a class="list-group-item list-group-item-action @(done ? "active" : "")"
+               asp-action="Projects" asp-route-id="5">
+                Done
+            </a>
+        </div>
+
+    </div><br /><br />
+
+    <div class="col-lg-8">
+        <h3>Manage projects</h3>
+
+        <p>
+            <a asp-controller="Project" asp-action="Assign">Assign project</a>
+        </p>
+
+        @await Html.PartialAsync("_ErrorMessagePartial", TempData["Message"])
+
+        @if (Model.Any())
+        {
+            <input class="form-control" id="myInput" type="text" placeholder="Search.."><br />
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ProjectCode)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EndDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Status)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Student)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Company)
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Project" asp-action="StatusLogs" asp-route-id="@item.ProjectId">@item.ProjectCode</a>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @if (item.EndDate.Equals(DateTime.MinValue))
+                                    {
+                                        @("-");
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.EndDate)
+                                    }
+                                </td>
+                                <td class="text-nowrap">
+                                    @Html.DisplayFor(modelItem => item.Statuses.FirstOrDefault(s => s.Value == item.Status.ToString()).Text)
+                                </td>
+                                <td>
+                                    <a asp-controller="Student" asp-action="Details" asp-route-id="@item.Student?.StudentId">@item.Student?.StudentCode</a>
+                                </td>
+                                <td>
+                                    <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Company?.CompanyId">@item.Company?.CompanyName</a>
+                                </td>
+                                <td class="text-nowrap">
+                                    <a asp-action="EditProject" asp-route-id="@item.ProjectId">Edit</a> |
+                                    <a asp-controller="Project" asp-action="Details" asp-route-id="@item.ProjectId">Details</a> |
+                                    <a asp-action="DeleteProject" asp-route-id="@item.ProjectId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h4>No projects</h4>
+        }
+    </div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/notification.js"></script>

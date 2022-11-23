@@ -1,0 +1,38 @@
+﻿@model ContactViewModel
+
+@{
+    ViewData["Title"] = "Contact";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2><br />
+<form class="form-md shadow-sm mb-5" asp-action="Contact" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Subject"></label>
+        <input asp-for="Subject" type="text" class="form-control" />
+        <span asp-validation-for="Subject" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="UserType"></label>
+        <select asp-for="UserType" asp-items="Model.UserTypes" class="form-control">
+            <option selected>-- Select user type --</option>
+        </select>
+        <span asp-validation-for="UserType" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Message"></label>
+        <textarea asp-for="Message" class="form-control" rows="5" placeholder="How can we help?"></textarea>
+    </div>
+    <div class="form-group clearfix">
+        <button type="reset" class="btn btn-outline-danger float-left" name="reset">Clear</button>
+        <button type="submit" class="btn btn-outline-primary float-right" name="send">Send</button>
+    </div>
+    <div class="text-success float-right">
+        @ViewBag.Message
+    </div>
+</form>

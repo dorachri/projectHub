@@ -1,0 +1,27 @@
+﻿@model AssignViewModel
+
+@{
+    ViewData["Title"] = "Assign project";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2><br />
+<form class="form-sm shadow-sm mb-5" asp-action="Assign" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" id="userRole" value="Professor" />
+    <div class="form-group">
+        <label asp-for="StudentCode" class="control-label"></label>
+        <input asp-for="StudentCode" class="form-control" />
+        <span asp-validation-for="StudentCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProjectCode" class="control-label"></label>
+        <input asp-for="ProjectCode" class="form-control" />
+        <span asp-validation-for="ProjectCode" class="text-danger"></span>
+    </div><br />
+    <div class="form-group">
+        <input type="submit" id="submit" value="Assign" class="btn btn-outline-primary btn-lg btn-block" />
+    </div>
+</form>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/notification.js"></script>

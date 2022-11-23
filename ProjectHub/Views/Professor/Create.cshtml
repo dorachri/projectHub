@@ -1,0 +1,40 @@
+﻿@model ProfessorViewModel
+
+@{
+    ViewData["Title"] = "Create account";
+}
+
+<h2 class="text-center">Professor info</h2>
+<br />
+<form class="form-md shadow-sm mb-5" asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Institution" class="control-label"></label>
+        <input asp-for="Institution" class="form-control" />
+        <span asp-validation-for="Institution" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Department" class="control-label"></label>
+        <input asp-for="Department" class="form-control" />
+        <span asp-validation-for="Department" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="School" class="control-label"></label>
+        <input asp-for="School" class="form-control" />
+        <span asp-validation-for="School" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Rank" class="control-label"></label>
+        <select asp-for="Rank" asp-items="Model.Ranks" class="form-control">
+            <option selected>-- Select rank --</option>
+        </select>
+        <span asp-validation-for="Rank" class="text-danger"></span>
+    </div>
+    <div class="form-group clearfix">
+        <input type="submit" value="Submit" class="btn btn-outline-primary float-right" />
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

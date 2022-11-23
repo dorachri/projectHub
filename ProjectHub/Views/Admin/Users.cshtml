@@ -1,0 +1,145 @@
+﻿@model IEnumerable<ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+@using ProjectHub.Areas.Identity.Data
+@using ProjectHub.Repositories
+@inject UserManager<ApplicationUser> UserManager
+@inject IStudentRepository StudentRepository
+@inject IProfessorRepository ProfessorRepository
+@inject ICompanyRepository CompanyRepository
+
+@{
+    ViewData["Title"] = "Users";
+    var allUsers = ViewContext.RouteData.Values["Id"] == null || ViewContext.RouteData.Values["Id"].Equals("0");
+    var activeUsers = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("1");
+    var inactiveUsers = ViewContext.RouteData.Values["Id"] != null && ViewContext.RouteData.Values["Id"].Equals("2");
+
+    @if (!(allUsers || activeUsers || inactiveUsers))
+    {
+        allUsers = true;
+    }
+}
+
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-2 mb-5">
+        <h3>Categories</h3><br />
+
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action @(allUsers ? "active" : "")"
+               asp-action="Users" asp-route-id="0">
+                All
+            </a>
+            <a class="list-group-item list-group-item-action @(activeUsers ? "active" : "")"
+               asp-action="Users" asp-route-id="1">
+                Active
+            </a>
+            <a class="list-group-item list-group-item-action @(inactiveUsers ? "active" : "")"
+               asp-action="Users" asp-route-id="2">
+                Inactive
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <h3>@ViewData["Title"]</h3><br />
+
+        @if (Model.Any())
+        {
+            <input class="form-control" id="myInput" type="text" placeholder="Search.."><br />
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Inactive)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                Role
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        @foreach (var item in Model)
+                        {
+                            var roles = await UserManager.GetRolesAsync(item);
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Inactive)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.UserName)
+                                </td>
+                                <td>
+                                    @(roles.FirstOrDefault() ?? "-")
+                                </td>
+                                <td class="text-nowrap">
+                                    @if (roles.FirstOrDefault() == "Student")
+                                    {
+                                        var student = StudentRepository.GetStudentByUserId(item.Id);
+
+                                        <div>
+                                            <a asp-action="EditStudent" asp-route-id="@student.StudentId">Edit</a> |
+                                            <a asp-controller="Student" asp-action="Details" asp-route-id="@student.StudentId">Details</a> |
+                                            <a asp-action="DeleteStudent" asp-route-id="@student.StudentId">Delete</a>
+                                        </div>
+                                    }
+                                    else if (roles.FirstOrDefault() == "Professor")
+                                    {
+                                        var professor = ProfessorRepository.GetProfessorByUserId(item.Id);
+
+                                        <div>
+                                            <a asp-action="EditProfessor" asp-route-id="@professor.ProfessorId">Edit</a> |
+                                            <a asp-controller="Professor" asp-action="Details" asp-route-id="@professor.ProfessorId">Details</a> |
+                                            <a asp-action="DeleteProfessor" asp-route-id="@professor.ProfessorId" method="post">Delete</a>
+                                        </div>
+                                    }
+                                    else if (roles.FirstOrDefault() == "Company")
+                                    {
+                                        var company = CompanyRepository.GetCompanyByUserId(item.Id);
+
+                                        <div>
+                                            <a asp-action="EditCompany" asp-route-id="@company.CompanyId">Edit</a> |
+                                            <a asp-controller="Company" asp-action="Details" asp-route-id="@company.CompanyId">Details</a> |
+                                            <a asp-action="DeleteCompany" asp-route-id="@company.CompanyId">Delete</a>
+                                        </div>
+                                    }
+                                    else if (roles.FirstOrDefault() == "Admin")
+                                    {
+                                        <div>-</div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <a asp-action="DeleteUser" asp-route-id="@item.Id">Delete</a>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <h4>No users</h4>
+        }
+    </div>
+</div>

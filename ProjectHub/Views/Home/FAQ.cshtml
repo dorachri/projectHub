@@ -1,0 +1,116 @@
+﻿@{
+    ViewData["Title"] = "FAQ";
+}
+
+<h1 class="text-center">Frequently Asked Questions</h1><br />
+<div class="container py-3 mb-5">
+    <div class="col-10 mx-auto">
+        <div class="accordion" id="students">
+            <h4 class="text-primary">Students</h4>
+            <div class="card">
+                <div class="card-header p-2" id="heading1">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                        How can I find a project?
+                    </button>
+                </div>
+                <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#students">
+                    <div class="card-body">
+                        You can find a project by searching for available projects. Available projects are those that are in the initial state, ie those that have not been assigned to another student, nor have been completed by a student.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="heading2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                        How can I manage my project?
+                    </button>
+                </div>
+                <div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#students">
+                    <div class="card-body">
+                        You can manage your project through the corresponding menu option.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="heading3">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                        How can I send the project I chose to my supervisor?
+                    </button>
+                </div>
+                <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#students">
+                    <div class="card-body">
+                        You can email the project you have selected to your supervisor via the available link in the search results.
+                    </div>
+                </div>
+            </div>
+        </div><br /><br />
+
+        <div class="accordion" id="professors">
+            <h4 class="text-primary">Professors</h4>
+            <div class="card">
+                <div class="card-header p-2" id="heading4">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                        How can I assign a project to a student?
+                    </button>
+                </div>
+                <div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#professors">
+                    <div class="card-body">
+                        You can assign a project to a student in 2 ways. Either through the corresponding option in the menu, if you know the necessary information for the assignment, or through the project search and after clicking the available link, you just need to fill in the student number.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="heading5">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                        How can I remove the assignment of a project to a student?
+                    </button>
+                </div>
+                <div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#professors">
+                    <div class="card-body">
+                        You can remove a project from a student by clicking the delete link in the corresponding project via the page "Manage projects".
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="heading6">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                        How can I see statistics for all the projects I supervise?
+                    </button>
+                </div>
+                <div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#professors">
+                    <div class="card-body">
+                        You can see statistics for the projects you supervise in the current academic year via the Dashboard option in the menu.
+                    </div>
+                </div>
+            </div>
+        </div><br /><br />
+
+        <div class="accordion" id="companies">
+            <h4 class="text-primary">Companies</h4>
+            <div class="card">
+                <div class="card-header p-2" id="heading7">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
+                        How can I add a project?
+                    </button>
+                </div>
+                <div id="collapse7" class="collapse" aria-labelledby="heading7" data-parent="#companies">
+                    <div class="card-body">
+                        You can add a project via the corresponding menu option.
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header p-2" id="heading8">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
+                        How can I see statistics for the projects I have added?
+                    </button>
+                </div>
+                <div id="collapse8" class="collapse" aria-labelledby="heading8" data-parent="#companies">
+                    <div class="card-body">
+                        You can see statistics for the projects you have added via the Dashboard option in the menu.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

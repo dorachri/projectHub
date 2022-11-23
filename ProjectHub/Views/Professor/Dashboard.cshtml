@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Project>
+@using System 
+
+@{
+    ViewData["Title"] = "Dashboard";
+    var academicYear = string.Empty;
+    decimal allProjects = Model.Count();
+    decimal assigned = Model.Where(p => p.Status == 2).Count();
+    decimal ongoing = Model.Where(p => p.Status == 3).Count();
+    decimal submitted = Model.Where(p => p.Status == 4).Count();
+    decimal done = Model.Where(p => p.Status == 5).Count();
+}
+
+@if (DateTime.Now.Month >= 10)
+{
+    academicYear = DateTime.Now.Year.ToString() + "-" + DateTime.Now.AddYears(1).Year.ToString();
+}
+else
+{
+    academicYear = DateTime.Now.AddYears(-1).Year.ToString() + "-" + DateTime.Now.Year.ToString();
+}
+
+<div class="container mb-5">
+    <h3>@ViewData["Title"] @academicYear</h3><br />
+
+    <div class="row">
+        <div class="col-sm-6 mb-4">
+            <div class="card border-primary border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-clipboard-list fa-2x float-right" style="color:#dfe4ea"></i>
+                    <h5 class="card-title">
+                        <a class="text-primary" asp-action="Projects">All projects</a>
+                    </h5>
+                    <p class="card-text">
+                        @allProjects @(allProjects == 1 ? "project" : "projects")
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 mb-4">
+            <div class="card border-info border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-hourglass-start fa-2x float-right" style="color:#dfe4ea"></i>
+                    <h5 class="card-title">
+                        <a class="text-info" asp-action="Projects" asp-route-id="2">Assigned</a>
+                    </h5>
+                    <p class="card-text">
+                        @assigned @(assigned == 1 ? "project" : "projects")
+                        <small class="text-muted">(@(allProjects > 0 ? Decimal.Round((assigned / allProjects) * 100) : 0)% of all projects)</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 mb-4">
+            <div class="card border-warning border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-tasks fa-2x float-right" style="color:#dfe4ea"></i>
+                    <h5 class="card-title">
+                        <a class="text-warning" asp-action="Projects" asp-route-id="3">Ongoing</a>
+                    </h5>
+                    <p class="card-text">
+                        @ongoing @(ongoing == 1 ? "project" : "projects")
+                        <small class="text-muted">(@(allProjects > 0 ? Decimal.Round((ongoing / allProjects) * 100) : 0)% of all projects)</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 mb-4">
+            <div class="card border-danger border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-clipboard-check fa-2x float-right" style="color:#dfe4ea"></i>
+                    <h5 class="card-title">
+                        <a class="text-danger" asp-action="Projects" asp-route-id="4">Submitted</a>
+                    </h5>
+                    <p class="card-text">
+                        @submitted @(submitted == 1 ? "project" : "projects")
+                        <small class="text-muted">(@(allProjects > 0 ? Decimal.Round((submitted / allProjects) * 100) : 0)% of all projects)</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 mb-4">
+            <div class="card border-success border-top-0 border-bottom-0 border-right-0 shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-check fa-2x float-right" style="color:#dfe4ea"></i>
+                    <h5 class="card-title">
+                        <a class="text-success" asp-action="Projects" asp-route-id="5">Done</a>
+                    </h5>
+                    <p class="card-text">
+                        @done @(done == 1 ? "project" : "projects")
+                        <small class="text-muted">(@(allProjects > 0 ? Decimal.Round((done / allProjects) * 100) : 0)% of all projects)</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
